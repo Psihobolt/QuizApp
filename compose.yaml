@@ -1,0 +1,7 @@
+﻿services:
+  quiz.webapi:
+    image: quiz.webapi
+    build:
+      context: .
+      dockerfile: Quiz.WebAPI/Dockerfile
+
