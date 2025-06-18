@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Quiz.DataAccessLayer.Interfaces;
 
 namespace Quiz.DataAccessLayer.Models;
 
 [Table("QuizState")]
-public class QuizStateModel
+public class QuizStateModel : IEntity
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
@@ -27,7 +28,7 @@ public class QuizStateModel
     /// </summary>
     public Guid QuizQuestionId { get; set; }
 
-    public QuizQuestionModel QuizQuestion { get; set; }
+    public QuizQuestionModel? QuizQuestion { get; set; }
 }
 
 public enum QuizStateEnum

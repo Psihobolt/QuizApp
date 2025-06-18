@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Quiz.DataAccessLayer.Interfaces;
 
 namespace Quiz.DataAccessLayer.Models;
 
 [Table("QuizAnswers"), Index([nameof(QuizQuestionId), nameof(Order)], IsUnique = true)]
-public class QuizAnswerModel
+public class QuizAnswerModel : IEntity
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
@@ -18,7 +19,7 @@ public class QuizAnswerModel
     /// <summary>
     /// Вопрос, к которому относится ответ
     /// </summary>
-    public QuizQuestionModel QuizQuestion { get; set; }
+    public QuizQuestionModel? QuizQuestion { get; set; }
 
     /// <summary>
     /// Является ли ответ правильным для вопроса, к которому он относится

@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Quiz.DataAccessLayer.Interfaces;
 
 namespace Quiz.DataAccessLayer.Models;
 
 [Table("QuizUserAnswer")]
-public class QuizUserAnswerModel
+public class QuizUserAnswerModel : IEntity
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
@@ -26,7 +27,7 @@ public class QuizUserAnswerModel
     /// <summary>
     /// Вопрос, на который дал ответ игрок
     /// </summary>
-    public QuizQuestionModel QuizQuestion { get; set; }
+    public QuizQuestionModel? QuizQuestion { get; set; }
 
     /// <summary>
     /// Id ответа, на который дал ответ игрок

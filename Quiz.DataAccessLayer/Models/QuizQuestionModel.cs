@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Quiz.DataAccessLayer.Interfaces;
 
 namespace Quiz.DataAccessLayer.Models;
 
 [Table("QuizQuestions"), Index(nameof(Order), IsUnique = true)]
-public class QuizQuestionModel
+public class QuizQuestionModel : IEntity
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
