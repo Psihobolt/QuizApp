@@ -23,4 +23,9 @@
       <ProjectReference Include="..\Quiz.DataAccessLayer\Quiz.DataAccessLayer.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Handlers\" />
+      <Folder Include="Services\" />
+    </ItemGroup>
+
 </Project>

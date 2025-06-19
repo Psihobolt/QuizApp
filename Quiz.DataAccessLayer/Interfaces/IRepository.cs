@@ -1,18 +1,11 @@
-using System.Linq.Expressions;
+using LightResults;
 
 namespace Quiz.DataAccessLayer.Interfaces;
 
-public interface IRepository<T> where T : class, IEntity
+public interface IRepository<TDto>
 {
-    Task<T?> GetByIdAsync(Guid id);
-
-    Task<IEnumerable<T>> GetAllAsync();
-
-    Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
-
-    Task<T> CreateAsync(T entity);
-
-    Task<T> UpdateAsync(T entity);
-
-    Task<T> DeleteAsync(Guid id);
+    Task<Result<TDto>> GetByIdAsync(Guid id, CancellationToken ct = default);
+    Task<Result> AddAsync(TDto dto, CancellationToken ct = default);
+    Task<Result> UpdateAsync(TDto dto, CancellationToken ct = default);
+    Task<Result> DeleteAsync(Guid id, CancellationToken ct = default);
 }

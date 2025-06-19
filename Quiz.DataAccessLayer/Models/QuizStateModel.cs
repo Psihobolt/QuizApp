@@ -43,5 +43,6 @@ public enum QuizStateEnum
     Statistics = 3,
     // Этап отображения ответов
     Answer = 4,
-    Final = 5
+    Final = 5,
+    FullStatistics = 6
 }

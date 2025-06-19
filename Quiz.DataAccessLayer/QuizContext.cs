@@ -13,7 +13,7 @@ public class QuizContext(DbContextOptions<QuizContext> options) : DbContext(opti
 
     public DbSet<QuizStateModel> QuizStates { get; set; }
 
-    public DbSet<TelegramUsersModel> TelegramUsers { get; set;}
+    public DbSet<TelegramUsersModel> TelegramUsers { get; set; }
 
     public DbSet<QuizUserAnswerModel> QuizUserAnswers { get; set; }
 

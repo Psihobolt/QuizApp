@@ -23,6 +23,11 @@ public class QuizQuestionModel : IEntity
     public List<QuizAnswerModel> Answers { get; set; } = [];
 
     /// <summary>
+    /// Id картинки, которая относится к вопросу
+    /// </summary>
+    public Guid? MediaContentId { get; set; }
+
+    /// <summary>
     /// Картинка, которая относится к вопросу
     /// </summary>
     public MediaContentModel? MediaContent { get; set; } = null;
