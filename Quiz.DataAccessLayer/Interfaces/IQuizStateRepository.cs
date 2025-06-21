@@ -8,7 +8,7 @@ public interface IQuizStateRepository : IRepository<QuizStateDto>
     /// <summary>
     /// Получить текущее активное состояние викторины.
     /// </summary>
-    Task<Result<QuizStateDto>> GetActiveAsync(CancellationToken ct = default);
+    Task<Result<QuizStateDto>> GetActiveStateAsync(CancellationToken ct = default);
 
     /// <summary>
     /// Создать и установить новое активное состояние викторины.

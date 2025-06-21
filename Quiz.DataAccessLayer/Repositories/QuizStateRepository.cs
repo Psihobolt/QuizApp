@@ -21,7 +21,7 @@ public sealed class QuizStateRepository(QuizContext context)
             : Result.Success(entity.ToDto());
     }
 
-    public async Task<Result<QuizStateDto>> GetActiveAsync(CancellationToken ct = default)
+    public async Task<Result<QuizStateDto>> GetActiveStateAsync(CancellationToken ct = default)
     {
         var entity = await context.QuizStates
             .AsNoTracking()

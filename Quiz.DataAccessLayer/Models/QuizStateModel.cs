@@ -34,15 +34,13 @@ public class QuizStateModel : IEntity
 public enum QuizStateEnum
 {
     // Этап пока викторина не началась и возможна регистрация
-    WaitingStart = 0,
-    // Пауза между турами
-    Waiting = 1,
+    WaitingForStart = 0,
     // Этап вопрос
-    Question = 2,
+    DisplayQuestion = 1,
     // Этап статистики полученных ответов
-    Statistics = 3,
+    DisplayAnswerStats = 2,
     // Этап отображения ответов
-    Answer = 4,
-    Final = 5,
-    FullStatistics = 6
+    DisplayCorrectAnswer = 3,
+    DisplayFullStats = 4,
+    DisplayTop5 = 5
 }
