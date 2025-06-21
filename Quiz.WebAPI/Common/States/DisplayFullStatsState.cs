@@ -9,6 +9,4 @@ public sealed class DisplayFullStatsState(IQuizStateRepository repository,
     IEnumerable<IQuizStateChangedHandler> handlers) : BaseState(repository, handlers), IQuizState
 {
     public override QuizStateEnum State => QuizStateEnum.DisplayFullStats;
-
-    public override Task OnExitAsync() => Task.CompletedTask;
 }

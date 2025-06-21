@@ -9,9 +9,4 @@ public sealed class DisplayTop5State(IQuizStateRepository repository,
     IEnumerable<IQuizStateChangedHandler> handlers) : BaseState(repository, handlers), IQuizState
 {
     public override QuizStateEnum State => QuizStateEnum.DisplayTop5;
-
-    public override async Task OnExitAsync()
-    {
-        throw new NotImplementedException();
-    }
 }

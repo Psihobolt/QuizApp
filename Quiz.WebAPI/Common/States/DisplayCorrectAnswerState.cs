@@ -9,9 +9,4 @@ public sealed class DisplayCorrectAnswerState(IQuizStateRepository repository,
     IEnumerable<IQuizStateChangedHandler> handlers) : BaseState(repository, handlers), IQuizState
 {
     public override QuizStateEnum State => QuizStateEnum.DisplayCorrectAnswer;
-
-    public override async Task OnExitAsync()
-    {
-        throw new NotImplementedException();
-    }
 }

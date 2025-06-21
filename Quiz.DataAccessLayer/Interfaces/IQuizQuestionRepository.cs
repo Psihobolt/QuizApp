@@ -6,6 +6,11 @@ namespace Quiz.DataAccessLayer.Interfaces;
 public interface IQuizQuestionRepository : IRepository<QuizQuestionDto>
 {
     /// <summary>
+    /// Получить количество вопросов в викторине
+    /// </summary>
+    Task<int> GetCountAsync(CancellationToken ct = default);
+
+    /// <summary>
     /// Получить вопрос по порядковому номеру.
     /// </summary>
     Task<Result<QuizQuestionDto>> GetByOrderAsync(int order);
@@ -13,7 +18,7 @@ public interface IQuizQuestionRepository : IRepository<QuizQuestionDto>
     /// <summary>
     /// Получить следующий вопрос после указанного порядкового номера.
     /// </summary>
-    Task<Result<QuizQuestionDto>> GetNextQuestionAsync(int currentOrder);
+    Task<Result<QuizQuestionDto>> GetNextQuestionAsync(Guid questionId);
 
     /// <summary>
     /// Получить самый первый вопрос.

@@ -4,8 +4,8 @@ namespace Quiz.WebAPI.Exceptions;
 
 public class RepositoryException : Exception
 {
-    public IError Errors { get; }
-    public RepositoryException(IError errors)
+    public IEnumerable<IError> Errors { get; }
+    public RepositoryException(IEnumerable<IError> errors)
     {
         Errors = errors;
     }

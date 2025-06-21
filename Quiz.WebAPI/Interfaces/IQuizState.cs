@@ -9,6 +9,5 @@ namespace Quiz.WebAPI.Interfaces;
 public interface IQuizState
 {
     QuizStateEnum State { get; }
-    Task OnEnterAsync(Guid quizQuestionId);
-    Task OnExitAsync();
+    Task OnEnterAsync(Guid quizQuestionId, CancellationToken ct = default);
 }

@@ -76,6 +76,9 @@ public sealed class QuizQuestionRepository(QuizContext context)
         return Result.Success();
     }
 
+    public async Task<int> GetCountAsync(CancellationToken ct = default)
+        => await context.QuizQuestions.AsNoTracking().CountAsync(cancellationToken: ct);
+
     public async Task<Result<QuizQuestionDto>> GetByOrderAsync(int order)
     {
         var entity = await context.QuizQuestions
@@ -90,20 +93,16 @@ public sealed class QuizQuestionRepository(QuizContext context)
             : Result.Success(entity.ToDto());
     }
 
-    public async Task<Result<QuizQuestionDto>> GetNextQuestionAsync(int currentOrder)
+    public async Task<Result<QuizQuestionDto>> GetNextQuestionAsync(Guid questionId)
     {
-        var entity = await context.QuizQuestions
-            .AsNoTracking()
-            .Include(q => q.Answers)
-            .ThenInclude(a => a.MediaContent)
-            .Include(q => q.MediaContent)
-            .Where(q => q.Order > currentOrder)
-            .OrderBy(q => q.Order)
-            .FirstOrDefaultAsync();
+        var currentQuestion = await GetByIdAsync(questionId);
+        if (currentQuestion.IsSuccess(out var question))
+        {
+            var nextQuestion = await GetByOrderAsync(question.Order + 1);
+            return nextQuestion.IsSuccess(out var result) ? result : Result.Failure<QuizQuestionDto>("Следующего вопроса нет");
+        }
 
-        return entity is null
-            ? Result.Failure<QuizQuestionDto>("Следующий вопрос не найден")
-            : Result.Success(entity.ToDto());
+        return Result.Failure<QuizQuestionDto>(currentQuestion.Errors);
     }
 
     public async Task<Result<QuizQuestionDto>> GetFirstQuestionAsync()

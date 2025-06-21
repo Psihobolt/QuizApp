@@ -8,5 +8,5 @@ namespace Quiz.WebAPI.Interfaces;
 /// </summary>
 public interface IQuizStateChangedHandler
 {
-    Task HandleAsync(QuizStateEnum newState);
+    Task HandleAsync(QuizStateEnum newState, CancellationToken ct = default);
 }

@@ -7,8 +7,8 @@ namespace Quiz.WebAPI.Common;
 /// <summary>
     /// Машина состояний викторины
     /// </summary>
-    public class QuizStateMachine(IEnumerable<IQuizState> states,
-                                    IQuizStateRepository repository)
+    public sealed class QuizStateMachine(IEnumerable<IQuizState> states,
+                                    IQuizStateRepository repository) : IQuizStateMachine
     {
         private readonly Dictionary<QuizStateEnum, IQuizState> _states = states.ToDictionary(s => s.State);
         private IQuizState? _currentState;
@@ -40,16 +40,15 @@ namespace Quiz.WebAPI.Common;
         /// </summary>
         public async Task ChangeStateAsync(QuizStateEnum next)
         {
-            var activeState = await repository.GetActiveStateAsync();
+            var resultOperation = await repository.GetActiveStateAsync();
 
-            if (!activeState.IsSuccess(out var dto))
+            if (!resultOperation.IsSuccess(out var activeState))
                 throw new InvalidOperationException($"State machine not initialized");
 
             if (!_states.TryGetValue(next, out IQuizState? value))
                 throw new InvalidOperationException($"State {next} not registered.");
 
-            await _currentState?.OnExitAsync()!;
             _currentState = value;
-            await _currentState.OnEnterAsync(dto.QuizQuestionId);
+            await _currentState.OnEnterAsync(activeState.QuizQuestionId);
         }
     }

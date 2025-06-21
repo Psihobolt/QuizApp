@@ -8,30 +8,28 @@ using Quiz.WebAPI.Interfaces;
 namespace Quiz.WebAPI.Common.States;
 
 public abstract class BaseState(
-    IQuizStateRepository repository,
-        IEnumerable<IQuizStateChangedHandler> handlers) : IQuizState
+    IQuizStateRepository stateRepository,
+    IEnumerable<IQuizStateChangedHandler> handlers) : IQuizState
 {
     public abstract QuizStateEnum State { get; }
 
-    protected virtual async Task SetStateAsync(Guid quizQuestionId)
+    protected virtual async Task SetStateAsync(Guid quizQuestionId, CancellationToken ct = default)
     {
-        var newState = await repository.SetNewStateAsync(new QuizStateDto()
+        var newState = await stateRepository.SetNewStateAsync(new QuizStateDto()
         {
             Id = Guid.Empty,
             State = State,
             QuizQuestionId = quizQuestionId,
-        });
+        }, ct);
 
-        if (newState.IsFailure(out var errors))
-            throw new RepositoryException(errors);
+        if (newState.IsFailure())
+            throw new RepositoryException(newState.Errors);
     }
 
-    public virtual async Task OnEnterAsync(Guid quizQuestionId)
+    public virtual async Task OnEnterAsync(Guid quizQuestionId, CancellationToken ct = default)
     {
-        await SetStateAsync(quizQuestionId);
+        await SetStateAsync(quizQuestionId, ct);
         foreach (var handler in handlers)
-            await handler.HandleAsync(State);
+            await handler.HandleAsync(State, ct);
     }
-
-    public abstract Task OnExitAsync();
 }
