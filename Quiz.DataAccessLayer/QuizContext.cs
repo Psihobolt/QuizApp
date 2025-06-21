@@ -17,11 +17,6 @@ public class QuizContext(DbContextOptions<QuizContext> options) : DbContext(opti
 
     public DbSet<QuizUserAnswerModel> QuizUserAnswers { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=QuizDB;User Id=QuizUser;Password=QuizPassword;");
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Конфигурация QuizQuestionModel
@@ -121,8 +116,9 @@ public class QuizContext(DbContextOptions<QuizContext> options) : DbContext(opti
                 .HasDefaultValueSql("gen_random_uuid()");
 
             entity.Property(e => e.Data)
+                .HasColumnType("bytea")
                 .IsRequired()
-                .HasComment("Хранит медиа файлы (картинки) в формате base64");
+                .HasComment("Хранит медиа файлы (картинки)");
         });
 
         // Конфигурация QuizStateModel
@@ -157,6 +153,7 @@ public class QuizContext(DbContextOptions<QuizContext> options) : DbContext(opti
 
             // Индекс для быстрого поиска активного состояния
             entity.HasIndex(e => e.IsActive)
+                .IsUnique()
                 .HasFilter("\"IsActive\" = true");
         });
 

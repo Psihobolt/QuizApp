@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Quiz.DataAccessLayer;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,5 +16,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+var connString = builder.Configuration.GetConnectionString("QuizDatabase");
+
+builder.Services.AddDbContextPool<QuizContext>(options =>
+    options.UseNpgsql(connString,
+            npgsql => npgsql.EnableRetryOnFailure())
+        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+);
 
 app.Run();
