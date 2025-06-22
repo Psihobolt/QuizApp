@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Quiz.DataAccessLayer;
+using Quiz.WebAPI.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,5 +25,7 @@ builder.Services.AddDbContextPool<QuizContext>(options =>
             npgsql => npgsql.EnableRetryOnFailure())
         .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
 );
+
+builder.Services.Configure<TelegramBotOptions>(builder.Configuration.GetSection(TelegramBotOptions.Section));
 
 app.Run();
