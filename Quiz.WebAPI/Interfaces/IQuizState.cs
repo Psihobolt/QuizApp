@@ -1,5 +1,6 @@
 using Quiz.DataAccessLayer.DTOs;
 using Quiz.DataAccessLayer.Models;
+using Quiz.WebAPI.Common.Dtos;
 
 namespace Quiz.WebAPI.Interfaces;
 
@@ -9,5 +10,5 @@ namespace Quiz.WebAPI.Interfaces;
 public interface IQuizState
 {
     QuizStateEnum State { get; }
-    Task OnEnterAsync(Guid quizQuestionId, CancellationToken ct = default);
+    Task OnEnterAsync(HandleDto handle, CancellationToken ct = default);
 }

@@ -7,4 +7,6 @@ public readonly record struct QuizAnswerDto(
     string Answer,
     Guid? MediaContentId,
     MediaContentDto? MediaContent,
+    Guid? AlternativeMediaContentId,
+    MediaContentDto? AlternativeMediaContent,
     int Order);

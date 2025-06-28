@@ -109,7 +109,7 @@ public sealed class QuizQuestionRepository(QuizContext context)
     {
         var entity = await context.QuizQuestions
             .AsNoTracking()
-            .Include(q => q.Answers)
+            .Include(q => q.Answers.OrderBy(model => model.Order))
             .ThenInclude(a => a.MediaContent)
             .Include(q => q.MediaContent)
             .OrderBy(q => q.Order)

@@ -44,3 +44,19 @@ public enum QuizStateEnum
     DisplayFullStats = 4,
     DisplayTop5 = 5
 }
+
+public static class QuizStateEnumExtensions
+{
+    public static string ToText(this QuizStateEnum state)
+
+        => state switch
+        {
+            QuizStateEnum.WaitingForStart => "Ожидание начала викторины",
+            QuizStateEnum.DisplayQuestion => "Отображение вопроса",
+            QuizStateEnum.DisplayAnswerStats => "Статистика ответов",
+            QuizStateEnum.DisplayCorrectAnswer => "Правильный ответ",
+            QuizStateEnum.DisplayFullStats => "Отображение полной статистики",
+            QuizStateEnum.DisplayTop5 => "Отображение ТОП-5 статистики",
+            _ => "Неизвестный тип события"
+        };
+}

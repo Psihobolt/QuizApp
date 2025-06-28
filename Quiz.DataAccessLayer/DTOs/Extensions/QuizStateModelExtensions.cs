@@ -5,7 +5,7 @@ namespace Quiz.DataAccessLayer.DTOs.Extensions;
 public static class QuizStateModelExtensions
 {
     public static QuizStateDto ToDto(this QuizStateModel model) =>
-        new(model.Id, model.State, model.QuizQuestionId, model.IsActive);
+        new(model.Id, model.State, model.QuizQuestionId, model.QuizQuestion!.ToDto(), model.IsActive);
 
     public static QuizStateModel FromDto(this QuizStateDto dto) => new()
     {

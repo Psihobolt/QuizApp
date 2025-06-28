@@ -1,4 +1,6 @@
+using Quiz.DataAccessLayer.DTOs;
 using Quiz.DataAccessLayer.Models;
+using Quiz.WebAPI.Common.Dtos;
 
 namespace Quiz.WebAPI.Interfaces;
 
@@ -12,5 +14,5 @@ public interface IQuizStateMachine
     /// <summary>
     /// Переход в новое состояние
     /// </summary>
-    public Task ChangeStateAsync(QuizStateEnum next);
+    public Task ChangeStateAsync(HandleDto handle);
 }

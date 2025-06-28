@@ -120,6 +120,7 @@ public sealed class QuizUserAnswerRepository(QuizContext context) : IQuizUserAns
         try
         {
             var stats = await context.QuizUserAnswers
+                .Include(x => x.Answer)
                 .AsNoTracking()
                 .Where(x => x.QuizQuestionId == questionId)
                 .GroupBy(x => x.AnswerId)
@@ -163,6 +164,27 @@ public sealed class QuizUserAnswerRepository(QuizContext context) : IQuizUserAns
         catch (Exception ex)
         {
             return Result.Failure<bool>(ex.Message);
+        }
+    }
+
+    public async Task<Result<Dictionary<TelegramUserDto, int>>> GetListCountCorrectAnswersGroupedByPlayerIdAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            var statistics = await context.QuizUserAnswers
+                .Include(x => x.Answer)
+                .ThenInclude(x=>x.QuizQuestion)
+                .Include(x=>x.Player)
+                .AsNoTracking()
+                .GroupBy(x=>x.Player)
+                .Select(g => new { g.Key, Count = g.Count(x => x.Answer.IsCorrect) })
+                .ToDictionaryAsync(x => x.Key.ToDto(), x => x.Count, ct);
+
+            return Result.Success(statistics);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure<Dictionary<TelegramUserDto, int>>(ex.Message);
         }
     }
 }

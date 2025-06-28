@@ -134,7 +134,6 @@ public abstract class DeletePlayerQuizMenu: IMenuConst
 public class TelegramAdminBotHandler(
     IOptions<TelegramBotOptions> telegramBotOptions,
     ITelegramBotClient bot,
-    QuizStateMachine stateMachine,
     IQuizService quizService)
 {
     private string _prevCommand = string.Empty;
@@ -161,9 +160,9 @@ public class TelegramAdminBotHandler(
         new[] { InlineKeyboardButton.WithCallbackData(BackMenu.MenuText, BackMenu.MenuKey) },
     };
 
-    private InlineKeyboardMarkup GenerateManageQuizMenu()
+    private async Task<InlineKeyboardMarkup> GenerateManageQuizMenu()
     {
-        var currentState = stateMachine.Current;
+        var currentState = (await quizService.GetActiveStateAsync()).State;
 
         return currentState switch
         {
@@ -206,7 +205,7 @@ public class TelegramAdminBotHandler(
                     break;
             };
 
-            await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, "Выберите действие:", replyMarkup: keyboard);
+            await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, "📌Выберите действие:", replyMarkup: keyboard);
         }
         else if (update.Type == UpdateType.CallbackQuery && update.CallbackQuery?.Message?.Chat.Id == telegramBotOptions.Value.AdminId)
         {
@@ -217,17 +216,17 @@ public class TelegramAdminBotHandler(
             {
                 case var _ when ManageQuizMenu.MenuKey == data && _prevCommand == MainMenu.MenuKey:
                     _prevCommand = ManageQuizMenu.MenuKey;
-                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, "Выберите действие:", replyMarkup: GenerateManageQuizMenu());
+                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, "📌Выберите действие:", replyMarkup: await GenerateManageQuizMenu());
                     break;
 
                 case var _ when ManageQuestionsMenu.MenuKey == data && _prevCommand == MainMenu.MenuKey:
                     _prevCommand = ManageQuestionsMenu.MenuKey;
-                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, "Выберите действие:", replyMarkup: _manageQuestions);
+                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, "📌Выберите действие:", replyMarkup: _manageQuestions);
                     break;
 
                 case var _ when ManagePlayersMenu.MenuKey == data && _prevCommand == MainMenu.MenuKey:
                     _prevCommand = MainMenu.MenuKey;
-                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, "Выберите действие:", replyMarkup: _mainMenu);
+                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, "📌Выберите действие:", replyMarkup: _mainMenu);
                     break;
 
                 case var _ when BackMenu.MenuKey == data:
@@ -241,26 +240,31 @@ public class TelegramAdminBotHandler(
                     break;
 
                 case var _ when StartQuizMenu.MenuKey == data && _prevCommand == ManageQuizMenu.MenuKey:
-                    await quizService.StartQuizAsync();
+                    var startInfo = await quizService.StartQuizAsync();
+                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, $"❗️Этап: {startInfo.state.ToText()}. Вопрос №{startInfo.orderQuestion}\n📌Выберите действие:", replyMarkup: await GenerateManageQuizMenu());
                     break;
 
                 case var _ when NextStepQuizMenu.MenuKey == data && _prevCommand == ManageQuizMenu.MenuKey:
-                    await quizService.NextStepAsync();
+                    var nextInfo = await quizService.NextStepQuizAsync();
+                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, $"❗️Этап: {nextInfo.state.ToText()}. Вопрос №{nextInfo.orderQuestion}\n📌Выберите действие:", replyMarkup: await GenerateManageQuizMenu());
                     break;
 
                 case var _ when PrevStepQuizMenu.MenuKey == data && _prevCommand == ManageQuizMenu.MenuKey:
-                    await quizService.PreviousStepAsync();
+                    var prevInfo = await quizService.PreviousStepQuizAsync();
+                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, $"❗️Этап: {prevInfo.state.ToText()}. Вопрос №{prevInfo.orderQuestion}\n📌Выберите действие:", replyMarkup: await GenerateManageQuizMenu());
                     break;
 
                 case var _ when TopFiveQuizMenu.MenuKey == data && _prevCommand == ManageQuizMenu.MenuKey:
-                    await quizService.ShowTopAsync(5);
+                    await quizService.ShowTopFiveResultsAsync();
+                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, "📈Отображается ТОП-5 игроков!\n📌Выберите действие:", replyMarkup: await GenerateManageQuizMenu());
                     break;
 
                 case var _ when FullStatisticsQuizMenu.MenuKey == data && _prevCommand == ManageQuizMenu.MenuKey:
                     await quizService.ShowFullStatsAsync();
+                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, "📈Отображается полная статистика игроков!\n📌Выберите действие:", replyMarkup: await GenerateManageQuizMenu());
                     break;
 
-                case "add_question" when _prevCommand == ManageQuestionsMenu.MenuKey:
+                /*case "add_question" when _prevCommand == ManageQuestionsMenu.MenuKey:
                     // Запустить конверсацию для добавления вопроса
                     await quizService.InitiateQuestionCreationAsync(adminChatId);
                     break;
@@ -273,10 +277,10 @@ public class TelegramAdminBotHandler(
                 case "delete_question" when _prevCommand == ManageQuestionsMenu.MenuKey:
                     // Запустить конверсацию для добавления вопроса
                     await quizService.InitiateQuestionCreationAsync(adminChatId);
-                    break;
+                    break;*/
 
                 default:
-                    await bot.SendTextMessageAsync(adminChatId, "Неизвестная команда.");
+                    await bot.SendTextMessageAsync(telegramBotOptions.Value.AdminId, "📌Выберите действие:", replyMarkup: _mainMenu);
                     break;
             }
         }

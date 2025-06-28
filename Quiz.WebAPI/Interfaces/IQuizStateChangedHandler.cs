@@ -1,5 +1,6 @@
 using Quiz.DataAccessLayer.DTOs;
 using Quiz.DataAccessLayer.Models;
+using Quiz.WebAPI.Common.Dtos;
 
 namespace Quiz.WebAPI.Interfaces;
 
@@ -8,5 +9,9 @@ namespace Quiz.WebAPI.Interfaces;
 /// </summary>
 public interface IQuizStateChangedHandler
 {
-    Task HandleAsync(QuizStateEnum newState, CancellationToken ct = default);
+    Task QuestionHandleAsync(QuizQuestionDto quizQuestionDto, CancellationToken ct = default);
+    Task StatisticsHandleAsync(QuizQuestionDto quizQuestionDto, Dictionary<Guid, int> statistics, CancellationToken ct = default);
+    Task AnswerHandleAsync(QuizQuestionDto quizQuestionDto, CancellationToken ct = default);
+    Task TopFiveHandleAsync(QuizQuestionDto quizQuestionDto, Dictionary<TelegramUserDto, int> userStat, CancellationToken ct = default);
+    Task PlayerStatisticsHandleAsync(QuizQuestionDto quizQuestionDto, Dictionary<TelegramUserDto, int> userStat, CancellationToken ct = default);
 }

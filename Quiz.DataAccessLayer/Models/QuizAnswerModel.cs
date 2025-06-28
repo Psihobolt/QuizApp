@@ -45,6 +45,21 @@ public class QuizAnswerModel : IEntity
     public MediaContentModel? MediaContent { get; set; }
 
     /// <summary>
+    /// Id картинки, которая относится к ответу и считается альтернативной
+    /// </summary>
+    public Guid? AlternativeMediaContentId { get; set; }
+
+    /// <summary>
+    /// Картинка, которая относится к ответу и считается альтернативной
+    /// </summary>
+    /// <remarks>
+    /// Такая картинка нужна в случаях, когда ответ должен по разному отображаться на этапа "Отображение вопроса" и "Отображение правильного ответа".
+    /// И в этом случае, например, на этапе "Отображение вопроса" отображается <see cref="MediaContent"/>,
+    /// а если есть в ответе <see cref="AlternativeMediaContent"/> - то на этапе "Отображение правильного ответа" отображается он.
+    /// </remarks>
+    public MediaContentModel? AlternativeMediaContent { get; set; }
+
+    /// <summary>
     /// Порядок ответа. Нумерация только в рамках вопроса
     /// </summary>
     public int Order { get; set; } = 0;

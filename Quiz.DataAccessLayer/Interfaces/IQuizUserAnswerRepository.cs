@@ -24,4 +24,6 @@ public interface IQuizUserAnswerRepository : IRepository<QuizUserAnswerDto>
     /// Проверяет, был ли уже дан ответ игроком на данный вопрос.
     /// </summary>
     Task<Result<bool>> HasPlayerAnsweredAsync(Guid playerId, Guid questionId, CancellationToken ct = default);
+
+    Task<Result<Dictionary<TelegramUserDto, int>>> GetListCountCorrectAnswersGroupedByPlayerIdAsync(CancellationToken ct = default);
 }
